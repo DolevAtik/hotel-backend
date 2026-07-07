@@ -58,3 +58,34 @@ jobs:
             ${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  update-infra:
+    name: Update Infra Manifests
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout hotel-infra
+        uses: actions/checkout@v4
+        with:
+          repository: DolevAtik/hotel-infra
+          token: ${{ secrets.PAT }}
+          path: infra
+
+      - name: Update Backend Image
+        run: |
+          cd infra
+          sed -i "s|image: dolevatik/hotel-backend:.*|image: dolevatik/hotel-backend:${{ github.sha }}|g" k8s/backend/deployment.yaml
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT }}
+          path: infra
+          branch: backend-${{ github.sha }}
+          base: main
+          commit-message: "Update backend image to ${{ github.sha }}"
+          title: "Update backend image to ${{ github.sha }}"
+          body: |
+            Automated update from Backend CI
+          delete-branch: true
