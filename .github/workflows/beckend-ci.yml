@@ -75,7 +75,7 @@ jobs:
       - name: Update Backend Image
         run: |
           cd infra
-          sed -i "s|image: dolevatik/hotel-backend:.*|image: dolevatik/hotel-backend:${{ github.sha }}|g" k8s/backend/deployment.yaml
+          sed -i "s|image:.*backend.*|image: dolevatik/hotel-backend:${{ github.sha }}|g" kubernetes/backend/deployment.yaml
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
