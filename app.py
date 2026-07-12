@@ -1,5 +1,7 @@
 import os
 
+# GitOps Test 2026-07-12 — end-to-end pipeline verification marker
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_cors import CORS
